@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AdministrativoEscolar.CDU\AdministrativoEscolar.CDU.csproj" />
     <ProjectReference Include="..\AdministrativoEscolar.CORE\AdministrativoEscolar.CORE.csproj" />
   </ItemGroup>
 

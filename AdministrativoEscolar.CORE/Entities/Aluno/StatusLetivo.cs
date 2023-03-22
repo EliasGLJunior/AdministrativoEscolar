@@ -11,6 +11,7 @@ namespace AdministrativoEscolar.CORE.Entities
         public int IdStatusLetivo { get; set; }
         public string CdStatusLetivo { get; set; } = string.Empty;
         public string TxStatusLetivo { get; set; } = string.Empty;
+        public string TxTipoEnsino { get; set; } = string.Empty;
         public virtual ICollection<AlunoStatusLetivoHistorico>? Alunos { get; set; }
     }
 }

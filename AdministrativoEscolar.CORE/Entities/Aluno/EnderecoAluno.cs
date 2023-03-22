@@ -10,7 +10,6 @@ namespace AdministrativoEscolar.CORE.Entities
     public class EnderecoAluno : BaseEntitie
     {
         public int IdEnderecoAluno { get; set; }
-        public int IdAluno { get; set; }
         public string TxEndereco { get; set; } = string.Empty;
         public string NuEndereco { get; set; } = string.Empty;
         public string NuCepEndereco { get; set; } = string.Empty;

@@ -10,7 +10,6 @@ namespace AdministrativoEscolar.CORE.Entities
     public class Aluno : BaseEntitie
     {
         public int IdAluno { get; set; }
-        public int IdMatricula { get; set; }
         public string NmAluno { get; set; } = string.Empty;
         public string SbnmAluno { get; set; } = string.Empty;
         public string NuTelefone { get; set; } = string.Empty;
