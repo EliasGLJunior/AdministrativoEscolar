@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdministrativoEscolar.CORE.Migrations
 {
     [DbContext(typeof(AdmEscolarDbContext))]
-    [Migration("20230324125135_InitialCreate")]
+    [Migration("20230324202629_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -270,8 +270,8 @@ namespace AdministrativoEscolar.CORE.Migrations
 
                     b.Property<string>("NuMatricula")
                         .IsRequired()
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("IdMatricula");
 
@@ -304,7 +304,7 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<int>("IdAluno")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUsuario")
+                    b.Property<int?>("IdUsuario")
                         .HasColumnType("int");
 
                     b.Property<string>("NmResponsavel")
@@ -332,7 +332,8 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.HasIndex("IdAluno");
 
                     b.HasIndex("IdUsuario")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IdUsuario] IS NOT NULL");
 
                     b.ToTable("ResponsavelAlunos");
                 });
@@ -829,8 +830,8 @@ namespace AdministrativoEscolar.CORE.Migrations
 
                     b.Property<string>("TxSenha")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("IdUsuario");
 
@@ -844,11 +845,11 @@ namespace AdministrativoEscolar.CORE.Migrations
                         new
                         {
                             IdUsuario = 1,
-                            DtAtualizacao = new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5048),
-                            DtCriacao = new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5035),
+                            DtAtualizacao = new DateTime(2023, 3, 24, 17, 26, 29, 710, DateTimeKind.Local).AddTicks(9102),
+                            DtCriacao = new DateTime(2023, 3, 24, 17, 26, 29, 710, DateTimeKind.Local).AddTicks(9094),
                             IdTipoUsuario = 1,
                             TxEmail = "eliasgomesleitejunior99@gmail.com",
-                            TxSenha = "123AdmEscolar"
+                            TxSenha = "f480a2d340bf03ab2fead30a6dbf161024e567fc7202f395072129bf50571af250faf2042a4d172f96936ad68270b0b9cc0b4dcc10f94c36a7454ab1237726a6"
                         });
                 });
 
@@ -917,8 +918,7 @@ namespace AdministrativoEscolar.CORE.Migrations
 
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Usuario", "Usuario")
                         .WithOne("ResponsavelAluno")
-                        .HasForeignKey("AdministrativoEscolar.CORE.Entities.ResponsavelAluno", "IdUsuario")
-                        .IsRequired();
+                        .HasForeignKey("AdministrativoEscolar.CORE.Entities.ResponsavelAluno", "IdUsuario");
 
                     b.Navigation("Aluno");
 

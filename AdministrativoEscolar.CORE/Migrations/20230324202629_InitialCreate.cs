@@ -43,7 +43,7 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     IdMatricula = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NuMatricula = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    NuMatricula = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -133,7 +133,7 @@ namespace AdministrativoEscolar.CORE.Migrations
                     IdEscola = table.Column<int>(type: "int", nullable: true),
                     IdTipoUsuario = table.Column<int>(type: "int", nullable: false),
                     TxEmail = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TxSenha = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TxSenha = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -259,7 +259,7 @@ namespace AdministrativoEscolar.CORE.Migrations
                     IdResponsavelAluno = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdAluno = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: true),
                     NmResponsavel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     NuTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     NuRG = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
@@ -364,7 +364,7 @@ namespace AdministrativoEscolar.CORE.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "IdUsuario", "DtAtualizacao", "DtCriacao", "DtDelecao", "IdEscola", "IdTipoUsuario", "TxEmail", "TxSenha" },
-                values: new object[] { 1, new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5048), new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5035), null, null, 1, "eliasgomesleitejunior99@gmail.com", "123AdmEscolar" });
+                values: new object[] { 1, new DateTime(2023, 3, 24, 17, 26, 29, 710, DateTimeKind.Local).AddTicks(9102), new DateTime(2023, 3, 24, 17, 26, 29, 710, DateTimeKind.Local).AddTicks(9094), null, null, 1, "eliasgomesleitejunior99@gmail.com", "f480a2d340bf03ab2fead30a6dbf161024e567fc7202f395072129bf50571af250faf2042a4d172f96936ad68270b0b9cc0b4dcc10f94c36a7454ab1237726a6" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Alunos_IdEscola",
@@ -402,7 +402,8 @@ namespace AdministrativoEscolar.CORE.Migrations
                 name: "IX_ResponsavelAlunos_IdUsuario",
                 table: "ResponsavelAlunos",
                 column: "IdUsuario",
-                unique: true);
+                unique: true,
+                filter: "[IdUsuario] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StatusMatriculaHistoricos_IdStatusMatricula",

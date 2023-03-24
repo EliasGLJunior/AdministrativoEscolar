@@ -11,7 +11,7 @@ namespace AdministrativoEscolar.CORE.Mappings
             builder.HasKey(x => x.IdMatricula);
 
             builder.Property(x => x.NuMatricula)
-                .HasMaxLength(9);
+                .HasMaxLength(10);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AdministrativoEscolar.CORE.Entities;
+using AdministrativoEscolar.CORE.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
@@ -78,7 +79,7 @@ namespace AdministrativoEscolar.CORE.Context
                     IdUsuario = 1,
                     IdTipoUsuario = 1,
                     TxEmail = "eliasgomesleitejunior99@gmail.com",
-                    TxSenha = "123AdmEscolar"
+                    TxSenha = Util.CryptoSha512("123AdmEscolar!")
                 }
             );
         }
@@ -89,36 +90,48 @@ namespace AdministrativoEscolar.CORE.Context
                 new TipoUsuario
                 {
                     IdTipoUsuario = 1,
-                    CdTipoUsuario = "administrador_geral",
+                    CdTipoUsuario = "administrador",
                     TxTipoUsuario = "Administrador Geral"
                 },
                 new TipoUsuario
                 {
                     IdTipoUsuario = 2,
-                    CdTipoUsuario = "administrador_escolar",
-                    TxTipoUsuario = "Administrador Escolar"
+                    CdTipoUsuario = "diretor",
+                    TxTipoUsuario = "Diretor"
                 },
                 new TipoUsuario
                 {
                     IdTipoUsuario = 3,
+                    CdTipoUsuario = "assistente",
+                    TxTipoUsuario = "Assistente"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 4,
+                    CdTipoUsuario = "orientador",
+                    TxTipoUsuario = "Orientador"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 5,
                     CdTipoUsuario = "professor",
                     TxTipoUsuario = "Professor"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 4,
+                    IdTipoUsuario = 6,
                     CdTipoUsuario = "aluno",
                     TxTipoUsuario = "Aluno"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 5,
+                    IdTipoUsuario = 7,
                     CdTipoUsuario = "responsavel_aluno",
                     TxTipoUsuario = "Responsável Aluno"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 6,
+                    IdTipoUsuario = 8,
                     CdTipoUsuario = "funcionario",
                     TxTipoUsuario = "Funcionario"
                 }

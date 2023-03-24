@@ -21,6 +21,7 @@ namespace AdministrativoEscolar.CORE.DTOs.Request.Aluno
         public string NuRG { get; set; } = string.Empty;
         public string NuCPF { get; set; } = string.Empty;
         public string TxNacionalidade { get; set; } = string.Empty;
+        public string TxEmail { get; set; } = string.Empty;
         public DateTime DtNascimento { get; set; }
     }
     public class EnderecoDTO
@@ -39,6 +40,7 @@ namespace AdministrativoEscolar.CORE.DTOs.Request.Aluno
         public string NuTelefone { get; set; } = string.Empty;
         public string NuRG { get; set; } = string.Empty;
         public string NuCPF { get; set; } = string.Empty;
+        public string TxEmail { get; set; } = string.Empty;
         public DateTime DtNascimento { get; set; }
         public bool FlResponsavelPrincipal { get; set; }
     }

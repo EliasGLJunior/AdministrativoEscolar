@@ -31,6 +31,9 @@ namespace AdministrativoEscolar.CORE.Mappings
                 .HasMaxLength(11)
                 .IsRequired();
 
+            builder.Property(x => x.IdUsuario)
+                .IsRequired(false);
+
             builder.HasOne(x => x.Aluno).WithMany(x => x.Responsaveis).HasForeignKey(x => x.IdAluno);
             builder.HasOne(x => x.Usuario).WithOne(x => x.ResponsavelAluno).HasForeignKey<ResponsavelAluno>(x => x.IdUsuario).OnDelete(DeleteBehavior.ClientSetNull);
         }

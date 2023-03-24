@@ -11,7 +11,7 @@ namespace AdministrativoEscolar.CORE.Entities
     {
         public int IdResponsavelAluno { get; set; }
         public int IdAluno { get; set; }
-        public int IdUsuario { get; set; }
+        public int? IdUsuario { get; set; }
         public string NmResponsavel { get; set; } = string.Empty;
         public string NuTelefone { get; set; } = string.Empty;
         public string NuRG { get; set; } = string.Empty;

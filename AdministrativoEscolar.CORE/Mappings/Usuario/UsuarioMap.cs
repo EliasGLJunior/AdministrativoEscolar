@@ -15,7 +15,7 @@ namespace AdministrativoEscolar.CORE.Mappings
                 .IsRequired();
 
             builder.Property(x => x.TxSenha)
-                .HasMaxLength(100)
+                .HasMaxLength(255)
                 .IsRequired();
 
             builder.Property(x => x.IdEscola)

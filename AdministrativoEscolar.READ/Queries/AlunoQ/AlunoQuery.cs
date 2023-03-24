@@ -26,6 +26,7 @@ namespace AdministrativoEscolar.READ.Queries.AlunoQ
                 using (IDbConnection connection = Connection)
                 {
                     sql += @$" WHERE A.[IdAluno] = {idAluno}";
+
                     var result = await connection.QueryFirstOrDefaultAsync<Aluno>(sql, null);
                     connection.Close();
                     connection.Dispose();
@@ -46,6 +47,7 @@ namespace AdministrativoEscolar.READ.Queries.AlunoQ
                 using (IDbConnection connection = Connection)
                 {
                     sql += @$" WHERE A.[NuCPF] = '{nuCPF}'";
+
                     var result = await connection.QueryFirstOrDefaultAsync<Aluno>(sql, null);
                     connection.Close();
                     connection.Dispose();
@@ -66,6 +68,7 @@ namespace AdministrativoEscolar.READ.Queries.AlunoQ
                 using (IDbConnection connection = Connection)
                 {
                     sql = @"SELECT COUNT(*) FROM [dbo].[Alunos] AS A WHERE YEAR(A.[DtCriacao]) = YEAR(GETDATE())";
+
                     var result = await connection.QueryFirstOrDefaultAsync<int>(sql, null);
                     connection.Close();
                     connection.Dispose();
