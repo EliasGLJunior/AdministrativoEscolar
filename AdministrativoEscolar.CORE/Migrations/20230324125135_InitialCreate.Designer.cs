@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdministrativoEscolar.CORE.Migrations
 {
     [DbContext(typeof(AdmEscolarDbContext))]
-    [Migration("20230322220201_InitialAluno")]
-    partial class InitialAluno
+    [Migration("20230324125135_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,49 +45,64 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<DateTime>("DtNascimento")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MatriculaIdMatricula")
+                    b.Property<int>("IdEscola")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdMatricula")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
                     b.Property<string>("NmAluno")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("NuCPF")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("NuRG")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("NuTelefone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("SbnmAluno")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TxNacionalidade")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("IdAluno");
 
-                    b.HasIndex("MatriculaIdMatricula");
+                    b.HasIndex("IdEscola");
+
+                    b.HasIndex("IdMatricula")
+                        .IsUnique();
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
 
                     b.ToTable("Alunos");
                 });
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.AlunoStatusLetivoHistorico", b =>
                 {
-                    b.Property<int>("IdStatusLetivoHistorico")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("IdAluno")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdStatusLetivoHistorico"));
-
-                    b.Property<int?>("AlunoIdAluno")
+                    b.Property<int>("IdStatusLetivo")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DtAtualizacao")
@@ -102,14 +117,9 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<bool>("FlStatusAtual")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("StatusLetivoIdStatusLetivo")
-                        .HasColumnType("int");
+                    b.HasKey("IdAluno", "IdStatusLetivo");
 
-                    b.HasKey("IdStatusLetivoHistorico");
-
-                    b.HasIndex("AlunoIdAluno");
-
-                    b.HasIndex("StatusLetivoIdStatusLetivo");
+                    b.HasIndex("IdStatusLetivo");
 
                     b.ToTable("AlunoStatusLetivoHistoricos");
                 });
@@ -121,9 +131,6 @@ namespace AdministrativoEscolar.CORE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEnderecoAluno"));
-
-                    b.Property<int?>("AlunoIdAluno")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DtAtualizacao")
                         .HasColumnType("datetime2");
@@ -137,35 +144,111 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<bool>("FlEnderecoAtual")
                         .HasColumnType("bit");
 
+                    b.Property<int>("IdAluno")
+                        .HasColumnType("int");
+
                     b.Property<string>("NuCepEndereco")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("NuEndereco")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("TxBairro")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TxCidade")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TxEndereco")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TxEstado")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("IdEnderecoAluno");
 
-                    b.HasIndex("AlunoIdAluno");
+                    b.HasIndex("IdAluno");
 
                     b.ToTable("EnderecoAlunos");
+                });
+
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Escola", b =>
+                {
+                    b.Property<int>("IdEscola")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEscola"));
+
+                    b.Property<string>("CdEscola")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("DtAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DtCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DtDelecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NmEscola")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NuCepEndereco")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("NuEndereco")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("NuTelefone")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("TxBairro")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("TxCidade")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("TxEndereco")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TxEstado")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.HasKey("IdEscola");
+
+                    b.ToTable("Escolas");
                 });
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Matricula", b =>
@@ -187,7 +270,8 @@ namespace AdministrativoEscolar.CORE.Migrations
 
                     b.Property<string>("NuMatricula")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.HasKey("IdMatricula");
 
@@ -201,9 +285,6 @@ namespace AdministrativoEscolar.CORE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdResponsavelAluno"));
-
-                    b.Property<int?>("AlunoIdAluno")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DtAtualizacao")
                         .HasColumnType("datetime2");
@@ -220,25 +301,38 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<bool>("FlResponsavelPrincipal")
                         .HasColumnType("bit");
 
+                    b.Property<int>("IdAluno")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("NmResponsavel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("NuCPF")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("NuRG")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("NuTelefone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.HasKey("IdResponsavelAluno");
 
-                    b.HasIndex("AlunoIdAluno");
+                    b.HasIndex("IdAluno");
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
 
                     b.ToTable("ResponsavelAlunos");
                 });
@@ -621,11 +715,11 @@ namespace AdministrativoEscolar.CORE.Migrations
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.StatusMatriculaHistorico", b =>
                 {
-                    b.Property<int>("IdStatusMatriculaHistorico")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("IdMatricula")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdStatusMatriculaHistorico"));
+                    b.Property<int>("IdStatusMatricula")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DtAtualizacao")
                         .HasColumnType("datetime2");
@@ -639,39 +733,163 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Property<bool>("FlStatusAtual")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MatriculaIdMatricula")
-                        .HasColumnType("int");
+                    b.HasKey("IdMatricula", "IdStatusMatricula");
 
-                    b.Property<int?>("StatusMatriculaIdStatusMatricula")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdStatusMatriculaHistorico");
-
-                    b.HasIndex("MatriculaIdMatricula");
-
-                    b.HasIndex("StatusMatriculaIdStatusMatricula");
+                    b.HasIndex("IdStatusMatricula");
 
                     b.ToTable("StatusMatriculaHistoricos");
                 });
 
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.TipoUsuario", b =>
+                {
+                    b.Property<int>("IdTipoUsuario")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoUsuario"));
+
+                    b.Property<string>("CdTipoUsuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TxTipoUsuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdTipoUsuario");
+
+                    b.ToTable("TipoUsuarios");
+
+                    b.HasData(
+                        new
+                        {
+                            IdTipoUsuario = 1,
+                            CdTipoUsuario = "administrador_geral",
+                            TxTipoUsuario = "Administrador Geral"
+                        },
+                        new
+                        {
+                            IdTipoUsuario = 2,
+                            CdTipoUsuario = "administrador_escolar",
+                            TxTipoUsuario = "Administrador Escolar"
+                        },
+                        new
+                        {
+                            IdTipoUsuario = 3,
+                            CdTipoUsuario = "professor",
+                            TxTipoUsuario = "Professor"
+                        },
+                        new
+                        {
+                            IdTipoUsuario = 4,
+                            CdTipoUsuario = "aluno",
+                            TxTipoUsuario = "Aluno"
+                        },
+                        new
+                        {
+                            IdTipoUsuario = 5,
+                            CdTipoUsuario = "responsavel_aluno",
+                            TxTipoUsuario = "Responsável Aluno"
+                        },
+                        new
+                        {
+                            IdTipoUsuario = 6,
+                            CdTipoUsuario = "funcionario",
+                            TxTipoUsuario = "Funcionario"
+                        });
+                });
+
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Usuario", b =>
+                {
+                    b.Property<int>("IdUsuario")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
+
+                    b.Property<DateTime>("DtAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DtCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DtDelecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdEscola")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTipoUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TxEmail")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TxSenha")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("IdUsuario");
+
+                    b.HasIndex("IdEscola");
+
+                    b.HasIndex("IdTipoUsuario");
+
+                    b.ToTable("Usuarios");
+
+                    b.HasData(
+                        new
+                        {
+                            IdUsuario = 1,
+                            DtAtualizacao = new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5048),
+                            DtCriacao = new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5035),
+                            IdTipoUsuario = 1,
+                            TxEmail = "eliasgomesleitejunior99@gmail.com",
+                            TxSenha = "123AdmEscolar"
+                        });
+                });
+
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Aluno", b =>
                 {
+                    b.HasOne("AdministrativoEscolar.CORE.Entities.Escola", "Escola")
+                        .WithMany("Alunos")
+                        .HasForeignKey("IdEscola")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Matricula", "Matricula")
-                        .WithMany()
-                        .HasForeignKey("MatriculaIdMatricula");
+                        .WithOne("Aluno")
+                        .HasForeignKey("AdministrativoEscolar.CORE.Entities.Aluno", "IdMatricula")
+                        .IsRequired();
+
+                    b.HasOne("AdministrativoEscolar.CORE.Entities.Usuario", "Usuario")
+                        .WithOne("Aluno")
+                        .HasForeignKey("AdministrativoEscolar.CORE.Entities.Aluno", "IdUsuario")
+                        .IsRequired();
+
+                    b.Navigation("Escola");
 
                     b.Navigation("Matricula");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.AlunoStatusLetivoHistorico", b =>
                 {
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Aluno", "Aluno")
                         .WithMany("StatusLetivoHistorico")
-                        .HasForeignKey("AlunoIdAluno");
+                        .HasForeignKey("IdAluno")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AdministrativoEscolar.CORE.Entities.StatusLetivo", "StatusLetivo")
                         .WithMany("Alunos")
-                        .HasForeignKey("StatusLetivoIdStatusLetivo");
+                        .HasForeignKey("IdStatusLetivo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Aluno");
 
@@ -682,7 +900,9 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Aluno", "Aluno")
                         .WithMany("Enderecos")
-                        .HasForeignKey("AlunoIdAluno");
+                        .HasForeignKey("IdAluno")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Aluno");
                 });
@@ -691,24 +911,54 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Aluno", "Aluno")
                         .WithMany("Responsaveis")
-                        .HasForeignKey("AlunoIdAluno");
+                        .HasForeignKey("IdAluno")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdministrativoEscolar.CORE.Entities.Usuario", "Usuario")
+                        .WithOne("ResponsavelAluno")
+                        .HasForeignKey("AdministrativoEscolar.CORE.Entities.ResponsavelAluno", "IdUsuario")
+                        .IsRequired();
 
                     b.Navigation("Aluno");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.StatusMatriculaHistorico", b =>
                 {
                     b.HasOne("AdministrativoEscolar.CORE.Entities.Matricula", "Matricula")
                         .WithMany("Historico")
-                        .HasForeignKey("MatriculaIdMatricula");
+                        .HasForeignKey("IdMatricula")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AdministrativoEscolar.CORE.Entities.StatusMatricula", "StatusMatricula")
                         .WithMany("HistoricoMatricula")
-                        .HasForeignKey("StatusMatriculaIdStatusMatricula");
+                        .HasForeignKey("IdStatusMatricula")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Matricula");
 
                     b.Navigation("StatusMatricula");
+                });
+
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Usuario", b =>
+                {
+                    b.HasOne("AdministrativoEscolar.CORE.Entities.Escola", "Escola")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("IdEscola");
+
+                    b.HasOne("AdministrativoEscolar.CORE.Entities.TipoUsuario", "TipoUsuario")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("IdTipoUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Escola");
+
+                    b.Navigation("TipoUsuario");
                 });
 
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Aluno", b =>
@@ -720,8 +970,17 @@ namespace AdministrativoEscolar.CORE.Migrations
                     b.Navigation("StatusLetivoHistorico");
                 });
 
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Escola", b =>
+                {
+                    b.Navigation("Alunos");
+
+                    b.Navigation("Usuarios");
+                });
+
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Matricula", b =>
                 {
+                    b.Navigation("Aluno");
+
                     b.Navigation("Historico");
                 });
 
@@ -733,6 +992,18 @@ namespace AdministrativoEscolar.CORE.Migrations
             modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.StatusMatricula", b =>
                 {
                     b.Navigation("HistoricoMatricula");
+                });
+
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.TipoUsuario", b =>
+                {
+                    b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("AdministrativoEscolar.CORE.Entities.Usuario", b =>
+                {
+                    b.Navigation("Aluno");
+
+                    b.Navigation("ResponsavelAluno");
                 });
 #pragma warning restore 612, 618
         }

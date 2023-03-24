@@ -8,18 +8,42 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AdministrativoEscolar.CORE.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAluno : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Escolas",
+                columns: table => new
+                {
+                    IdEscola = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CdEscola = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NmEscola = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NuTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    TxEndereco = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NuEndereco = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    NuCepEndereco = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    TxBairro = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TxCidade = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TxEstado = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Escolas", x => x.IdEscola);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Matriculas",
                 columns: table => new
                 {
                     IdMatricula = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NuMatricula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NuMatricula = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -59,19 +83,93 @@ namespace AdministrativoEscolar.CORE.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TipoUsuarios",
+                columns: table => new
+                {
+                    IdTipoUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CdTipoUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TxTipoUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipoUsuarios", x => x.IdTipoUsuario);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StatusMatriculaHistoricos",
+                columns: table => new
+                {
+                    IdMatricula = table.Column<int>(type: "int", nullable: false),
+                    IdStatusMatricula = table.Column<int>(type: "int", nullable: false),
+                    FlStatusAtual = table.Column<bool>(type: "bit", nullable: false),
+                    DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatusMatriculaHistoricos", x => new { x.IdMatricula, x.IdStatusMatricula });
+                    table.ForeignKey(
+                        name: "FK_StatusMatriculaHistoricos_Matriculas_IdMatricula",
+                        column: x => x.IdMatricula,
+                        principalTable: "Matriculas",
+                        principalColumn: "IdMatricula",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StatusMatriculaHistoricos_StatusMatriculas_IdStatusMatricula",
+                        column: x => x.IdStatusMatricula,
+                        principalTable: "StatusMatriculas",
+                        principalColumn: "IdStatusMatricula",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Usuarios",
+                columns: table => new
+                {
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdEscola = table.Column<int>(type: "int", nullable: true),
+                    IdTipoUsuario = table.Column<int>(type: "int", nullable: false),
+                    TxEmail = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TxSenha = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuarios", x => x.IdUsuario);
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Escolas_IdEscola",
+                        column: x => x.IdEscola,
+                        principalTable: "Escolas",
+                        principalColumn: "IdEscola");
+                    table.ForeignKey(
+                        name: "FK_Usuarios_TipoUsuarios_IdTipoUsuario",
+                        column: x => x.IdTipoUsuario,
+                        principalTable: "TipoUsuarios",
+                        principalColumn: "IdTipoUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Alunos",
                 columns: table => new
                 {
                     IdAluno = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NmAluno = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SbnmAluno = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuTelefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuRG = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuCPF = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TxNacionalidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdEscola = table.Column<int>(type: "int", nullable: false),
+                    IdMatricula = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    NmAluno = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SbnmAluno = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NuTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    NuRG = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NuCPF = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    TxNacionalidade = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     DtNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MatriculaIdMatricula = table.Column<int>(type: "int", nullable: true),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -80,66 +178,49 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     table.PrimaryKey("PK_Alunos", x => x.IdAluno);
                     table.ForeignKey(
-                        name: "FK_Alunos_Matriculas_MatriculaIdMatricula",
-                        column: x => x.MatriculaIdMatricula,
-                        principalTable: "Matriculas",
-                        principalColumn: "IdMatricula");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StatusMatriculaHistoricos",
-                columns: table => new
-                {
-                    IdStatusMatriculaHistorico = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FlStatusAtual = table.Column<bool>(type: "bit", nullable: false),
-                    MatriculaIdMatricula = table.Column<int>(type: "int", nullable: true),
-                    StatusMatriculaIdStatusMatricula = table.Column<int>(type: "int", nullable: true),
-                    DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StatusMatriculaHistoricos", x => x.IdStatusMatriculaHistorico);
+                        name: "FK_Alunos_Escolas_IdEscola",
+                        column: x => x.IdEscola,
+                        principalTable: "Escolas",
+                        principalColumn: "IdEscola",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StatusMatriculaHistoricos_Matriculas_MatriculaIdMatricula",
-                        column: x => x.MatriculaIdMatricula,
+                        name: "FK_Alunos_Matriculas_IdMatricula",
+                        column: x => x.IdMatricula,
                         principalTable: "Matriculas",
                         principalColumn: "IdMatricula");
                     table.ForeignKey(
-                        name: "FK_StatusMatriculaHistoricos_StatusMatriculas_StatusMatriculaIdStatusMatricula",
-                        column: x => x.StatusMatriculaIdStatusMatricula,
-                        principalTable: "StatusMatriculas",
-                        principalColumn: "IdStatusMatricula");
+                        name: "FK_Alunos_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
                 name: "AlunoStatusLetivoHistoricos",
                 columns: table => new
                 {
-                    IdStatusLetivoHistorico = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAluno = table.Column<int>(type: "int", nullable: false),
+                    IdStatusLetivo = table.Column<int>(type: "int", nullable: false),
                     FlStatusAtual = table.Column<bool>(type: "bit", nullable: false),
-                    AlunoIdAluno = table.Column<int>(type: "int", nullable: true),
-                    StatusLetivoIdStatusLetivo = table.Column<int>(type: "int", nullable: true),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AlunoStatusLetivoHistoricos", x => x.IdStatusLetivoHistorico);
+                    table.PrimaryKey("PK_AlunoStatusLetivoHistoricos", x => new { x.IdAluno, x.IdStatusLetivo });
                     table.ForeignKey(
-                        name: "FK_AlunoStatusLetivoHistoricos_Alunos_AlunoIdAluno",
-                        column: x => x.AlunoIdAluno,
+                        name: "FK_AlunoStatusLetivoHistoricos_Alunos_IdAluno",
+                        column: x => x.IdAluno,
                         principalTable: "Alunos",
-                        principalColumn: "IdAluno");
+                        principalColumn: "IdAluno",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AlunoStatusLetivoHistoricos_StatusLetivos_StatusLetivoIdStatusLetivo",
-                        column: x => x.StatusLetivoIdStatusLetivo,
+                        name: "FK_AlunoStatusLetivoHistoricos_StatusLetivos_IdStatusLetivo",
+                        column: x => x.IdStatusLetivo,
                         principalTable: "StatusLetivos",
-                        principalColumn: "IdStatusLetivo");
+                        principalColumn: "IdStatusLetivo",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,14 +229,14 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     IdEnderecoAluno = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TxEndereco = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuEndereco = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuCepEndereco = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TxBairro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TxCidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TxEstado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdAluno = table.Column<int>(type: "int", nullable: false),
+                    TxEndereco = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NuEndereco = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    NuCepEndereco = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    TxBairro = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TxCidade = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TxEstado = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     FlEnderecoAtual = table.Column<bool>(type: "bit", nullable: false),
-                    AlunoIdAluno = table.Column<int>(type: "int", nullable: true),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -164,10 +245,11 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     table.PrimaryKey("PK_EnderecoAlunos", x => x.IdEnderecoAluno);
                     table.ForeignKey(
-                        name: "FK_EnderecoAlunos_Alunos_AlunoIdAluno",
-                        column: x => x.AlunoIdAluno,
+                        name: "FK_EnderecoAlunos_Alunos_IdAluno",
+                        column: x => x.IdAluno,
                         principalTable: "Alunos",
-                        principalColumn: "IdAluno");
+                        principalColumn: "IdAluno",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -176,13 +258,14 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     IdResponsavelAluno = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NmResponsavel = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuTelefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuRG = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NuCPF = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdAluno = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    NmResponsavel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    NuTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    NuRG = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NuCPF = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     DtNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FlResponsavelPrincipal = table.Column<bool>(type: "bit", nullable: false),
-                    AlunoIdAluno = table.Column<int>(type: "int", nullable: true),
                     DtCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtDelecao = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -191,10 +274,16 @@ namespace AdministrativoEscolar.CORE.Migrations
                 {
                     table.PrimaryKey("PK_ResponsavelAlunos", x => x.IdResponsavelAluno);
                     table.ForeignKey(
-                        name: "FK_ResponsavelAlunos_Alunos_AlunoIdAluno",
-                        column: x => x.AlunoIdAluno,
+                        name: "FK_ResponsavelAlunos_Alunos_IdAluno",
+                        column: x => x.IdAluno,
                         principalTable: "Alunos",
-                        principalColumn: "IdAluno");
+                        principalColumn: "IdAluno",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ResponsavelAlunos_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.InsertData(
@@ -259,40 +348,76 @@ namespace AdministrativoEscolar.CORE.Migrations
                     { 10, "graduado", "Graduado" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "TipoUsuarios",
+                columns: new[] { "IdTipoUsuario", "CdTipoUsuario", "TxTipoUsuario" },
+                values: new object[,]
+                {
+                    { 1, "administrador_geral", "Administrador Geral" },
+                    { 2, "administrador_escolar", "Administrador Escolar" },
+                    { 3, "professor", "Professor" },
+                    { 4, "aluno", "Aluno" },
+                    { 5, "responsavel_aluno", "Responsável Aluno" },
+                    { 6, "funcionario", "Funcionario" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Usuarios",
+                columns: new[] { "IdUsuario", "DtAtualizacao", "DtCriacao", "DtDelecao", "IdEscola", "IdTipoUsuario", "TxEmail", "TxSenha" },
+                values: new object[] { 1, new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5048), new DateTime(2023, 3, 24, 9, 51, 35, 688, DateTimeKind.Local).AddTicks(5035), null, null, 1, "eliasgomesleitejunior99@gmail.com", "123AdmEscolar" });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Alunos_MatriculaIdMatricula",
+                name: "IX_Alunos_IdEscola",
                 table: "Alunos",
-                column: "MatriculaIdMatricula");
+                column: "IdEscola");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AlunoStatusLetivoHistoricos_AlunoIdAluno",
+                name: "IX_Alunos_IdMatricula",
+                table: "Alunos",
+                column: "IdMatricula",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alunos_IdUsuario",
+                table: "Alunos",
+                column: "IdUsuario",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AlunoStatusLetivoHistoricos_IdStatusLetivo",
                 table: "AlunoStatusLetivoHistoricos",
-                column: "AlunoIdAluno");
+                column: "IdStatusLetivo");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AlunoStatusLetivoHistoricos_StatusLetivoIdStatusLetivo",
-                table: "AlunoStatusLetivoHistoricos",
-                column: "StatusLetivoIdStatusLetivo");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EnderecoAlunos_AlunoIdAluno",
+                name: "IX_EnderecoAlunos_IdAluno",
                 table: "EnderecoAlunos",
-                column: "AlunoIdAluno");
+                column: "IdAluno");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponsavelAlunos_AlunoIdAluno",
+                name: "IX_ResponsavelAlunos_IdAluno",
                 table: "ResponsavelAlunos",
-                column: "AlunoIdAluno");
+                column: "IdAluno");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusMatriculaHistoricos_MatriculaIdMatricula",
-                table: "StatusMatriculaHistoricos",
-                column: "MatriculaIdMatricula");
+                name: "IX_ResponsavelAlunos_IdUsuario",
+                table: "ResponsavelAlunos",
+                column: "IdUsuario",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusMatriculaHistoricos_StatusMatriculaIdStatusMatricula",
+                name: "IX_StatusMatriculaHistoricos_IdStatusMatricula",
                 table: "StatusMatriculaHistoricos",
-                column: "StatusMatriculaIdStatusMatricula");
+                column: "IdStatusMatricula");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdEscola",
+                table: "Usuarios",
+                column: "IdEscola");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdTipoUsuario",
+                table: "Usuarios",
+                column: "IdTipoUsuario");
         }
 
         /// <inheritdoc />
@@ -321,6 +446,15 @@ namespace AdministrativoEscolar.CORE.Migrations
 
             migrationBuilder.DropTable(
                 name: "Matriculas");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Escolas");
+
+            migrationBuilder.DropTable(
+                name: "TipoUsuarios");
         }
     }
 }

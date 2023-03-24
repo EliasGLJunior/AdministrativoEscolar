@@ -10,6 +10,8 @@ namespace AdministrativoEscolar.CORE.Entities
     public class ResponsavelAluno : BaseEntitie
     {
         public int IdResponsavelAluno { get; set; }
+        public int IdAluno { get; set; }
+        public int IdUsuario { get; set; }
         public string NmResponsavel { get; set; } = string.Empty;
         public string NuTelefone { get; set; } = string.Empty;
         public string NuRG { get; set; } = string.Empty;
@@ -17,5 +19,6 @@ namespace AdministrativoEscolar.CORE.Entities
         public DateTime DtNascimento { get; set; }
         public bool FlResponsavelPrincipal { get; set; }
         public virtual Aluno? Aluno { get; set; }
+        public virtual Usuario? Usuario { get; set; }
     }
 }

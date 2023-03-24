@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdministrativoEscolar.CORE.DTOs.Request
+namespace AdministrativoEscolar.CORE.DTOs.Request.Aluno
 {
-    public class AlunoRequestDTO
+    public class CreateAlunoRequestDTO
     {
         public AlunoDTO? Aluno { get; set; }
         public EnderecoDTO? Endereco { get; set; }
@@ -15,8 +15,6 @@ namespace AdministrativoEscolar.CORE.DTOs.Request
     }
     public class AlunoDTO
     {
-        public int IdAluno { get; set; }
-        public int IdMatricula { get; set; }
         public string NmAluno { get; set; } = string.Empty;
         public string SbnmAluno { get; set; } = string.Empty;
         public string NuTelefone { get; set; } = string.Empty;

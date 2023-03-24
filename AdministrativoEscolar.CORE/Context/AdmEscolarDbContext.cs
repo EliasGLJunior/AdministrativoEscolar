@@ -1,6 +1,7 @@
 ﻿using AdministrativoEscolar.CORE.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace AdministrativoEscolar.CORE.Context
 {
@@ -22,9 +23,9 @@ namespace AdministrativoEscolar.CORE.Context
             _configuration = configuration;
         }
 
-    #region DbSets de Alunos
+        #region DbSets de Alunos
 
-    public DbSet<Aluno> Alunos { get; set; }
+        public DbSet<Aluno> Alunos { get; set; }
         public DbSet<AlunoStatusLetivoHistorico> AlunoStatusLetivoHistoricos { get; set; }
         public DbSet<EnderecoAluno> EnderecoAlunos { get; set; }
         public DbSet<Matricula> Matriculas { get; set; }
@@ -32,6 +33,19 @@ namespace AdministrativoEscolar.CORE.Context
         public DbSet<StatusLetivo> StatusLetivos { get; set; }
         public DbSet<StatusMatricula> StatusMatriculas { get; set; }
         public DbSet<StatusMatriculaHistorico> StatusMatriculaHistoricos { get; set; }
+
+        #endregion
+
+        #region DbSets de Escolas
+
+        public DbSet<Escola> Escolas { get; set; }
+
+        #endregion
+
+        #region DbSets de Usuarios
+
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<TipoUsuario> TipoUsuarios { get; set; }
 
         #endregion
 
@@ -46,17 +60,69 @@ namespace AdministrativoEscolar.CORE.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Aluno>().HasKey(i => i.IdAluno);
-            modelBuilder.Entity<AlunoStatusLetivoHistorico>().HasKey(i => i.IdStatusLetivoHistorico);
-            modelBuilder.Entity<EnderecoAluno>().HasKey(i => i.IdEnderecoAluno);
-            modelBuilder.Entity<Matricula>().HasKey(i => i.IdMatricula);
-            modelBuilder.Entity<ResponsavelAluno>().HasKey(i => i.IdResponsavelAluno);
-            modelBuilder.Entity<StatusLetivo>().HasKey(i => i.IdStatusLetivo);
-            modelBuilder.Entity<StatusMatricula>().HasKey(i => i.IdStatusMatricula);
-            modelBuilder.Entity<StatusMatriculaHistorico>().HasKey(i => i.IdStatusMatriculaHistorico);
+            base.OnModelCreating(modelBuilder);
 
             SeedStatusLetivo(modelBuilder);
             SeedStatusMatricula(modelBuilder);
+            SeedTipoUsuario(modelBuilder);
+            SeedUsuarioAdmGeral(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(GetType()));
+        }
+
+        private void SeedUsuarioAdmGeral(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    IdUsuario = 1,
+                    IdTipoUsuario = 1,
+                    TxEmail = "eliasgomesleitejunior99@gmail.com",
+                    TxSenha = "123AdmEscolar"
+                }
+            );
+        }
+
+        private void SeedTipoUsuario(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TipoUsuario>().HasData(
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 1,
+                    CdTipoUsuario = "administrador_geral",
+                    TxTipoUsuario = "Administrador Geral"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 2,
+                    CdTipoUsuario = "administrador_escolar",
+                    TxTipoUsuario = "Administrador Escolar"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 3,
+                    CdTipoUsuario = "professor",
+                    TxTipoUsuario = "Professor"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 4,
+                    CdTipoUsuario = "aluno",
+                    TxTipoUsuario = "Aluno"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 5,
+                    CdTipoUsuario = "responsavel_aluno",
+                    TxTipoUsuario = "Responsável Aluno"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 6,
+                    CdTipoUsuario = "funcionario",
+                    TxTipoUsuario = "Funcionario"
+                }
+            );
         }
 
         private static void SeedStatusLetivo(ModelBuilder modelBuilder)

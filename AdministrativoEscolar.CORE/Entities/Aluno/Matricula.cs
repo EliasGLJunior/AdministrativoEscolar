@@ -12,5 +12,6 @@ namespace AdministrativoEscolar.CORE.Entities
         public int IdMatricula { get; set; }
         public string NuMatricula { get; set; } = string.Empty;
         public virtual ICollection<StatusMatriculaHistorico>? Historico { get; set; }
+        public virtual Aluno? Aluno { get; set; }
     }
 }

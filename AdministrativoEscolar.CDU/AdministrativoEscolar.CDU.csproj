@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdministrativoEscolar.CORE\AdministrativoEscolar.CORE.csproj" />
+    <ProjectReference Include="..\AdministrativoEscolar.READ\AdministrativoEscolar.READ.csproj" />
   </ItemGroup>
 
 </Project>
