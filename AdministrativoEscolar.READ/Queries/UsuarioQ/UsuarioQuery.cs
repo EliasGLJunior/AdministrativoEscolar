@@ -1,6 +1,7 @@
 ﻿using AdministrativoEscolar.CORE.DTOs.Request;
 using AdministrativoEscolar.CORE.DTOs.Response.Usuario;
 using AdministrativoEscolar.CORE.Entities;
+using AdministrativoEscolar.CORE.Notification;
 using AdministrativoEscolar.CORE.Utils;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -14,10 +15,10 @@ using System.Threading.Tasks;
 
 namespace AdministrativoEscolar.READ.Queries.UsuarioQ
 {
-    public class UsuarioQuery : IUsuarioQuery
+    public class UsuarioQuery : Notificar, IUsuarioQuery
     {
         private readonly IConfiguration _config;
-        public UsuarioQuery(IConfiguration config) => _config = config;
+        public UsuarioQuery(IConfiguration config, INotificador notificador) : base(notificador) => _config = config;
 
         public IDbConnection Connection
         {
@@ -53,6 +54,12 @@ namespace AdministrativoEscolar.READ.Queries.UsuarioQ
 
                     connection.Close();
                     connection.Dispose();
+
+                    if (resultQuery == null)
+                    {
+                        NotificarErro("Login ou Senha invalidos"); 
+                        return new TokenResponseDTO();
+                    }
 
                     var result = Util.GeneratedTokenJwt(resultQuery);
 
