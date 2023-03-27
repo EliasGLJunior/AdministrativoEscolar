@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AdministrativoEscolar.CORE\AdministrativoEscolar.CORE.csproj" />
+    <ProjectReference Include="..\AdministrativoEscolar.EMAIL\AdministrativoEscolar.EMAIL.csproj" />
     <ProjectReference Include="..\AdministrativoEscolar.READ\AdministrativoEscolar.READ.csproj" />
   </ItemGroup>
 

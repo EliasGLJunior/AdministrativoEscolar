@@ -12,7 +12,7 @@ namespace AdministrativoEscolar.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class AlunoController : BaseController
     {
         private readonly IAlunoService _alunoService;

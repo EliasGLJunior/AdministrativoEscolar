@@ -11,6 +11,6 @@ namespace AdministrativoEscolar.READ.Queries.UsuarioQ
 {
     public interface IUsuarioQuery
     {
-        Task<TokenResponseDTO> GetLogin(LoginRequestDTO loginDTO);
+        Task<LoginResponseDTO> GetLogin(LoginRequestDTO loginDTO);
     }
 }

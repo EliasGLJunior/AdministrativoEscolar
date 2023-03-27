@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AdministrativoEscolar.EMAIL.EmailService
 {
-    public interface IEmailService
+    public interface ISendEmailService
     {
         Task<EmailSendResult> SendEmailAsync(string serializedMessage);
     }

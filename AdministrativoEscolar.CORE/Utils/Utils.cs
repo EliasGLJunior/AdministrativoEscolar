@@ -62,7 +62,7 @@ namespace AdministrativoEscolar.CORE.Utils
         {
             var listDestination = new List<InternetAddress>();
 
-            foreach (var emails in email.DestinationEmail)
+            foreach (var emails in email!.DestinationEmail!)
             {
                 var newDestiny = new MailboxAddress(Encoding.UTF8, emails.Name, emails.Email);
 

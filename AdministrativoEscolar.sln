@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdministrativoEscolar.SMS",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdministrativoEscolar.API", "AdministrativoEscolar.API\AdministrativoEscolar.API.csproj", "{75BA8E95-086B-4FA9-8508-F1B0D1453EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrativoEscolar.TEST", "AdministrativoEscolar.TEST\AdministrativoEscolar.TEST.csproj", "{3237A81F-99D5-4A23-A81B-F2730B46D8B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdministrativoEscolar.TEST", "AdministrativoEscolar.TEST\AdministrativoEscolar.TEST.csproj", "{3237A81F-99D5-4A23-A81B-F2730B46D8B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2508D42-756E-4944-B795-F7AE0072E9F1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

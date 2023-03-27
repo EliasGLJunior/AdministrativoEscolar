@@ -7,64 +7,102 @@ using AdministrativoEscolar.CORE.Notification;
 using AdministrativoEscolar.CORE.Utils;
 using AdministrativoEscolar.CORE.Utils.UserLogged;
 using AdministrativoEscolar.READ.Queries.AlunoQ;
+using AdministrativoEscolar.READ.Queries.StatusMatriculaQ;
+using AdministrativoEscolar.READ.Queries.StatusUsuarioQ;
 using AdministrativoEscolar.READ.Queries.TipoUsuarioQ;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AdministrativoEscolar.CDU.Services
 {
     public class AlunoService : Notificar, IAlunoService
     {
+        IDbContextTransaction transaction;
         private readonly AdmEscolarDbContext _db;
         private readonly IAlunoQuery _alunoQuery;
+        private readonly IStatusMatriculaQuery _statusMatriculaQuery;
+        private readonly IStatusUsuarioQuery _statusUsuarioQuery;
         private readonly ITipoUsuarioQuery _tipoUsuarioQuery;
+        private readonly IEmailService _emailService;
         private readonly IUserLoggedExtensions _userLoggedExtensions;
 
-        public AlunoService(AdmEscolarDbContext context, IAlunoQuery alunoQuery, ITipoUsuarioQuery tipoUsuarioQuery, IUserLoggedExtensions userLoggedExtensions, INotificador notificador) : base(notificador)
+        public AlunoService(
+            AdmEscolarDbContext context, 
+            IAlunoQuery alunoQuery,
+            IStatusMatriculaQuery statusMatriculaQuery,
+            IStatusUsuarioQuery statusUsuarioQuery,
+            ITipoUsuarioQuery tipoUsuarioQuery, 
+            IEmailService emailService, 
+            IUserLoggedExtensions userLoggedExtensions, 
+            INotificador notificador) : base(notificador)
         {
             _db = context;
             _alunoQuery = alunoQuery;
+            _statusMatriculaQuery = statusMatriculaQuery;
+            _statusUsuarioQuery = statusUsuarioQuery;
             _tipoUsuarioQuery = tipoUsuarioQuery;
+            _emailService = emailService;
             _userLoggedExtensions = userLoggedExtensions;
         }
 
         public async Task<ResponseDTO> Create(CreateAlunoRequestDTO alunoDTO)
         {
             GenericResponseDTO<Aluno> response = new();
-
-            var existeAluno = _alunoQuery.GetAlunoByCPF(alunoDTO.Aluno!.NuCPF).Result;
-
-            if(existeAluno != null) { 
-                NotificarErro("Já existe um aluno cadastrado com esse CPF"); 
-                return response; 
-            }
-
-            string nuMatricula = GerarNuMatricula();
-            int idEscola = _userLoggedExtensions.getIdEscola();
-
-            var aluno = new Aluno()
+            try
             {
-                IdAluno = 0,
-                IdEscola = idEscola,
-                DtNascimento = alunoDTO.Aluno!.DtNascimento,
-                NmAluno = alunoDTO.Aluno!.NmAluno,
-                NuCPF = alunoDTO.Aluno!.NuCPF,
-                NuRG = alunoDTO.Aluno!.NuRG,
-                NuTelefone = alunoDTO.Aluno!.NuTelefone,
-                SbnmAluno = alunoDTO.Aluno!.SbnmAluno,
-                TxNacionalidade = alunoDTO.Aluno!.TxNacionalidade,
-                Matricula = new Matricula()
+                transaction = _db.Database.BeginTransaction();
+                var existeAluno = _alunoQuery.GetAlunoByCPF(alunoDTO.Aluno!.NuCPF).Result;
+
+                if (existeAluno != null)
+                {
+                    RollbackWithError("Já existe um aluno cadastrado com esse CPF");
+                    return response;
+                }
+
+                string nuMatricula = GerarNuMatricula();
+                int idEscola = _userLoggedExtensions.getIdEscola();
+                int statusUsuarioId = _statusUsuarioQuery.GetIdByCdStatusUsuario("pendente").Result;
+
+                var aluno = new Aluno()
+                {
+                    IdAluno = 0,
+                    IdEscola = idEscola,
+                    DtNascimento = alunoDTO.Aluno!.DtNascimento,
+                    NmAluno = alunoDTO.Aluno!.NmAluno,
+                    NuCPF = alunoDTO.Aluno!.NuCPF,
+                    NuRG = alunoDTO.Aluno!.NuRG,
+                    NuTelefone = alunoDTO.Aluno!.NuTelefone,
+                    SbnmAluno = alunoDTO.Aluno!.SbnmAluno,
+                    TxNacionalidade = alunoDTO.Aluno!.TxNacionalidade,
+                    Matricula = new Matricula()
                     {
                         IdMatricula = 0,
-                        NuMatricula = nuMatricula
+                        NuMatricula = nuMatricula,
+                        Historico = new List<StatusMatriculaHistorico>()
+                        {
+                            new StatusMatriculaHistorico()
+                            {
+                                FlStatusAtual = true,
+                                IdStatusMatricula = _statusMatriculaQuery.GetIdByCdStatusMatricula("pendente").Result
+                            }
+                        }
                     },
-                Usuario = new Usuario()
+                    Usuario = new Usuario()
                     {
                         IdUsuario = 0,
                         IdEscola = idEscola,
                         IdTipoUsuario = _tipoUsuarioQuery.GetIdByCdTipoUsuario("aluno").Result,
                         TxEmail = alunoDTO.Aluno.TxEmail,
-                        TxSenha = Util.CryptoSha512(nuMatricula + alunoDTO.Aluno!.NuCPF.Take(3) + alunoDTO.Aluno!.NuRG.Take(2))
+                        TxSenha = Util.CryptoSha512(nuMatricula + alunoDTO.Aluno!.NuCPF.Take(3) + alunoDTO.Aluno!.NuRG.Take(2)),
+                        Historico = new List<StatusUsuarioHistorico>()
+                        {
+                            new StatusUsuarioHistorico()
+                            {
+                                IdStatusUsuario = statusUsuarioId,
+                                FlStatusAtual = true
+                            }
+                        }
                     },
-                Enderecos = new List<EnderecoAluno>()
+                    Enderecos = new List<EnderecoAluno>()
                     {
                         new EnderecoAluno()
                         {
@@ -78,34 +116,63 @@ namespace AdministrativoEscolar.CDU.Services
                             TxEstado = alunoDTO.Endereco!.TxEstado,
                         }
                     },
-                Responsaveis = alunoDTO.Responsaveis?.Select(
-                    responsavel => new ResponsavelAluno()
-                    {
-                        IdResponsavelAluno = 0,
-                        DtNascimento = responsavel.DtNascimento,
-                        FlResponsavelPrincipal = responsavel.FlResponsavelPrincipal,
-                        NmResponsavel = responsavel.NmResponsavel,
-                        NuCPF = responsavel.NuCPF,
-                        NuRG = responsavel.NuRG,
-                        NuTelefone = responsavel.NuTelefone,
-                        Usuario = responsavel.FlResponsavelPrincipal ? new Usuario()
+                    Responsaveis = alunoDTO.Responsaveis?.Select(
+                        responsavel => new ResponsavelAluno()
+                        {
+                            IdResponsavelAluno = 0,
+                            DtNascimento = responsavel.DtNascimento,
+                            FlResponsavelPrincipal = responsavel.FlResponsavelPrincipal,
+                            NmResponsavel = responsavel.NmResponsavel,
+                            NuCPF = responsavel.NuCPF,
+                            NuRG = responsavel.NuRG,
+                            NuTelefone = responsavel.NuTelefone,
+                            Usuario = responsavel.FlResponsavelPrincipal ? new Usuario()
                             {
                                 IdUsuario = 0,
                                 IdEscola = idEscola,
                                 IdTipoUsuario = _tipoUsuarioQuery.GetIdByCdTipoUsuario("responsavel_aluno").Result,
                                 TxEmail = responsavel.TxEmail,
-                                TxSenha = Util.CryptoSha512(nuMatricula + responsavel!.NuCPF.Take(3) + responsavel!.NuRG.Take(2))
+                                TxSenha = Util.CryptoSha512(nuMatricula + responsavel!.NuCPF.Take(3) + responsavel!.NuRG.Take(2)),
+                                Historico = new List<StatusUsuarioHistorico>()
+                                {
+                                    new StatusUsuarioHistorico()
+                                    {
+                                        IdStatusUsuario = statusUsuarioId,
+                                        FlStatusAtual = true
+                                    }
+                                }
                             } : null
-                    }).ToList()                
-            };
+                        }).ToList(),
+                    StatusLetivoHistorico = new List<AlunoStatusLetivoHistorico>()
+                    {
+                        new AlunoStatusLetivoHistorico()
+                        {
+                            FlStatusAtual = true,
+                            IdStatusLetivo = alunoDTO.Aluno.IdStatusLetivo
+                        }
+                    }
+                };
 
-            _db.Alunos.Add(aluno);
+                string emailResponsavelPrincipal = alunoDTO.Responsaveis!.Where(r => r.FlResponsavelPrincipal).Select(r => r.TxEmail).FirstOrDefault()!;
 
-            await _db.SaveChangesAsync();
+                _emailService.EnviarEmail(alunoDTO.Aluno.TxEmail, "aluno");
+                _emailService.EnviarEmail(emailResponsavelPrincipal, "responsavel_aluno");
 
-            response = new GenericResponseDTO<Aluno>(aluno);
+                _db.Alunos.Add(aluno);
 
-            return response; 
+                await _db.SaveChangesAsync();
+
+                response = new GenericResponseDTO<Aluno>(aluno);
+
+                transaction.Commit();
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                RollbackWithError("AVISO: Ocorreu um erro ao cadastrar um Aluno: " + ex.Message);
+                return response;
+            }
         }
 
         public async Task<ResponseDTO> Delete(int idAluno)
@@ -180,6 +247,12 @@ namespace AdministrativoEscolar.CDU.Services
             var quantidadeAlunos = _alunoQuery.QuantidadeAlunos().Result + 1;
             var ano = DateTime.Now.Year.ToString();
             return ano + "A" + quantidadeAlunos.ToString().PadLeft(5, '0');
+        }
+
+        private void RollbackWithError(string error)
+        {
+            NotificarErro(error);
+            transaction.Rollback();
         }
     }
 }

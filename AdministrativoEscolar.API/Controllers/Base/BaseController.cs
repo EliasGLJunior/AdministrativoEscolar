@@ -20,7 +20,7 @@ namespace AdministrativoEscolar.API.Controllers.Base
             return !_notificador.TemNotificacao();
         }
 
-        protected ActionResult CustomResponse(object result = null)
+        protected ActionResult CustomResponse(object? result = null)
         {
             if (OperacaoValida())
             {
@@ -34,7 +34,7 @@ namespace AdministrativoEscolar.API.Controllers.Base
             });
         }
 
-        protected ActionResult CustomResponseTerminal(object result = null)
+        protected ActionResult CustomResponseTerminal(object? result = null)
         {
             if (OperacaoValida())
             {

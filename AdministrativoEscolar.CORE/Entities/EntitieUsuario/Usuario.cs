@@ -18,5 +18,6 @@ namespace AdministrativoEscolar.CORE.Entities
         public Aluno? Aluno { get; set; }
         public ResponsavelAluno? ResponsavelAluno { get; set; }
         public TipoUsuario? TipoUsuario { get; set; }
+        public virtual ICollection<StatusUsuarioHistorico>? Historico { get; set; }
     }
 }

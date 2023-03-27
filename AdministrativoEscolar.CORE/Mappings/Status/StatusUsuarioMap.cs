@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdministrativoEscolar.CORE.Mappings
+namespace AdministrativoEscolar.CORE.Mappings.Status
 {
-    public class StatusMatriculaMap : IEntityTypeConfiguration<StatusMatricula>
+    public class StatusUsuarioMap : IEntityTypeConfiguration<StatusUsuario>
     {
-        public void Configure(EntityTypeBuilder<StatusMatricula> builder)
+        public void Configure(EntityTypeBuilder<StatusUsuario> builder)
         {
-            builder.HasKey(x => x.IdStatusMatricula);
+            builder.HasKey(x => x.IdStatusUsuario);
         }
     }
 }

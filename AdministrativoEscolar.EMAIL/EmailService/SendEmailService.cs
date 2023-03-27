@@ -8,14 +8,14 @@ using System.Text;
 
 namespace AdministrativoEscolar.EMAIL.EmailService
 {
-    public class EmailService : IEmailService
+    public class SendEmailService : ISendEmailService
     {
         #region Intialize
         private readonly SmtpConfiguration _smtpConfig;
-        private readonly ILogger<EmailService> _logger;
+        private readonly ILogger<SendEmailService> _logger;
 
-        public EmailService(IOptions<SmtpConfiguration> smtpConfig,
-                                  ILogger<EmailService> logger)
+        public SendEmailService(IOptions<SmtpConfiguration> smtpConfig,
+                                  ILogger<SendEmailService> logger)
         {
             _logger = logger;
             _smtpConfig = smtpConfig.Value;

@@ -31,8 +31,6 @@ namespace AdministrativoEscolar.CORE.Context
         public DbSet<EnderecoAluno> EnderecoAlunos { get; set; }
         public DbSet<Matricula> Matriculas { get; set; }
         public DbSet<ResponsavelAluno> ResponsavelAlunos { get; set; }
-        public DbSet<StatusLetivo> StatusLetivos { get; set; }
-        public DbSet<StatusMatricula> StatusMatriculas { get; set; }
         public DbSet<StatusMatriculaHistorico> StatusMatriculaHistoricos { get; set; }
 
         #endregion
@@ -47,6 +45,15 @@ namespace AdministrativoEscolar.CORE.Context
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<TipoUsuario> TipoUsuarios { get; set; }
+        public DbSet<StatusUsuarioHistorico> StatusUsuarioHistoricos { get; set; }
+
+        #endregion
+
+        #region DbSets de Status
+
+        public DbSet<StatusLetivo> StatusLetivos { get; set; }
+        public DbSet<StatusMatricula> StatusMatriculas { get; set; }
+        public DbSet<StatusUsuario> StatusUsuarios { get; set; }
 
         #endregion
 
@@ -63,12 +70,36 @@ namespace AdministrativoEscolar.CORE.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            SeedStatusUsuario(modelBuilder);
             SeedStatusLetivo(modelBuilder);
             SeedStatusMatricula(modelBuilder);
             SeedTipoUsuario(modelBuilder);
             SeedUsuarioAdmGeral(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(GetType()));
+        }
+
+        private void SeedStatusUsuario(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StatusUsuario>().HasData(
+                new StatusUsuario
+                {
+                    IdStatusUsuario = 1,
+                    CdStatusUsuario = "pendente",
+                    TxStatusUsuario = "Pendente"
+                },
+                new StatusUsuario
+                {
+                    IdStatusUsuario = 2,
+                    CdStatusUsuario = "liberado",
+                    TxStatusUsuario = "Liberado"
+                },
+                new StatusUsuario
+                {
+                    IdStatusUsuario = 3,
+                    CdStatusUsuario = "desativado",
+                    TxStatusUsuario = "Desativado"
+                });
         }
 
         private void SeedUsuarioAdmGeral(ModelBuilder modelBuilder)
@@ -114,24 +145,30 @@ namespace AdministrativoEscolar.CORE.Context
                 new TipoUsuario
                 {
                     IdTipoUsuario = 5,
+                    CdTipoUsuario = "coordenador",
+                    TxTipoUsuario = "Coordenador"
+                },
+                new TipoUsuario
+                {
+                    IdTipoUsuario = 6,
                     CdTipoUsuario = "professor",
                     TxTipoUsuario = "Professor"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 6,
+                    IdTipoUsuario = 7,
                     CdTipoUsuario = "aluno",
                     TxTipoUsuario = "Aluno"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 7,
+                    IdTipoUsuario = 8,
                     CdTipoUsuario = "responsavel_aluno",
                     TxTipoUsuario = "Responsável Aluno"
                 },
                 new TipoUsuario
                 {
-                    IdTipoUsuario = 8,
+                    IdTipoUsuario = 9,
                     CdTipoUsuario = "funcionario",
                     TxTipoUsuario = "Funcionario"
                 }

@@ -28,12 +28,10 @@ namespace AdministrativoEscolar.READ.Queries.UsuarioQ
         string sql = @"SELECT A.[IdAluno] AS IdAluno
 					  FROM [dbo].[Alunos] AS A";
 
-        public async Task<TokenResponseDTO> GetLogin(LoginRequestDTO loginDTO)
+        public async Task<LoginResponseDTO> GetLogin(LoginRequestDTO loginDTO)
         {
             try
             {
-                var senha = Util.CryptoSha512(loginDTO.TxSenha);
-
                 using (IDbConnection connection = Connection)
                 {
                     sql = @$"SELECT U.IdUsuario AS IdUsuario
@@ -48,20 +46,12 @@ namespace AdministrativoEscolar.READ.Queries.UsuarioQ
                              LEFT JOIN Escolas AS E ON U.IdEscola = E.IdEscola
 		                     LEFT JOIN Alunos AS A ON U.IdUsuario = A.IdUsuario
 		                     LEFT JOIN Matriculas AS M ON M.IdMatricula = A.IdMatricula
-                             WHERE (U.TxEmail = '{loginDTO.TxLogin}' OR M.NuMatricula = '{loginDTO.TxLogin}') AND U.TxSenha = '{senha}'";
+                             WHERE (U.TxEmail = '{loginDTO.TxLogin}' OR M.NuMatricula = '{loginDTO.TxLogin}') AND U.TxSenha = '{loginDTO.TxSenha}'";
 
-                    var resultQuery = await connection.QueryFirstOrDefaultAsync<LoginResponseDTO>(sql, null);
+                    var result = await connection.QueryFirstOrDefaultAsync<LoginResponseDTO>(sql, null);
 
                     connection.Close();
                     connection.Dispose();
-
-                    if (resultQuery == null)
-                    {
-                        NotificarErro("Login ou Senha invalidos"); 
-                        return new TokenResponseDTO();
-                    }
-
-                    var result = Util.GeneratedTokenJwt(resultQuery);
 
                     return result;
                 }

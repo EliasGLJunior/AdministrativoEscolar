@@ -15,6 +15,7 @@ namespace AdministrativoEscolar.CORE.DTOs.Request.Aluno
     }
     public class AlunoDTO
     {
+        public int IdStatusLetivo { get; set; }
         public string NmAluno { get; set; } = string.Empty;
         public string SbnmAluno { get; set; } = string.Empty;
         public string NuTelefone { get; set; } = string.Empty;

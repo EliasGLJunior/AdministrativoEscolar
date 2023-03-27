@@ -5,6 +5,8 @@ using AdministrativoEscolar.CORE.Utils.UserLogged;
 using AdministrativoEscolar.EMAIL.EmailService;
 using AdministrativoEscolar.EMAIL.Model;
 using AdministrativoEscolar.READ.Queries.AlunoQ;
+using AdministrativoEscolar.READ.Queries.StatusMatriculaQ;
+using AdministrativoEscolar.READ.Queries.StatusUsuarioQ;
 using AdministrativoEscolar.READ.Queries.TipoUsuarioQ;
 using AdministrativoEscolar.READ.Queries.UsuarioQ;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -33,6 +35,8 @@ namespace AdministrativoEscolar.API.Configurations
         private static void RegisterQuery(IServiceCollection services)
         {
             services.AddTransient<IAlunoQuery, AlunoQuery>();
+            services.AddTransient<IStatusMatriculaQuery, StatusMatriculaQuery>();
+            services.AddTransient<IStatusUsuarioQuery, StatusUsuarioQuery>();
             services.AddTransient<ITipoUsuarioQuery, TipoUsuarioQuery>();
             services.AddTransient<IUsuarioQuery, UsuarioQuery>();
         }
@@ -40,7 +44,9 @@ namespace AdministrativoEscolar.API.Configurations
         private static void RegisterService(IServiceCollection services)
         {
             services.AddTransient<IAlunoService, AlunoService>();
-            services.AddSingleton<IEmailService, EmailService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ISendEmailService, SendEmailService>();
+            services.AddTransient<IUsuarioService, UsuarioService>();
         }
 
         private static void RegisterExtensions(IServiceCollection services)
