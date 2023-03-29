@@ -5,6 +5,9 @@ using AdministrativoEscolar.CORE.Utils.UserLogged;
 using AdministrativoEscolar.EMAIL.EmailService;
 using AdministrativoEscolar.EMAIL.Model;
 using AdministrativoEscolar.READ.Queries.AlunoQ;
+using AdministrativoEscolar.READ.Queries.EnderecoQ;
+using AdministrativoEscolar.READ.Queries.MatriculaQ;
+using AdministrativoEscolar.READ.Queries.ResponsavelAlunoQ;
 using AdministrativoEscolar.READ.Queries.StatusMatriculaQ;
 using AdministrativoEscolar.READ.Queries.StatusUsuarioQ;
 using AdministrativoEscolar.READ.Queries.TipoUsuarioQ;
@@ -35,6 +38,9 @@ namespace AdministrativoEscolar.API.Configurations
         private static void RegisterQuery(IServiceCollection services)
         {
             services.AddTransient<IAlunoQuery, AlunoQuery>();
+            services.AddTransient<IEnderecoAlunoQuery, EnderecoAlunoQuery>();
+            services.AddTransient<IMatriculaQuery, MatriculaQuery>();
+            services.AddTransient<IResponsavelAlunoQuery, ResponsavelAlunoQuery>();
             services.AddTransient<IStatusMatriculaQuery, StatusMatriculaQuery>();
             services.AddTransient<IStatusUsuarioQuery, StatusUsuarioQuery>();
             services.AddTransient<ITipoUsuarioQuery, TipoUsuarioQuery>();
@@ -45,6 +51,8 @@ namespace AdministrativoEscolar.API.Configurations
         {
             services.AddTransient<IAlunoService, AlunoService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IEnderecoAlunoService, EnderecoAlunoService>();
+            services.AddTransient<IResponsavelAlunoService, ResponsavelAlunoService>();
             services.AddTransient<ISendEmailService, SendEmailService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
         }
