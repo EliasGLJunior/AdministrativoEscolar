@@ -87,7 +87,8 @@ namespace AdministrativoEscolar.CDU.Services
                 }
             };
 
-            _emailService.EnviarEmail(responsavelDTO.TxEmail, "responsavel_aluno");
+            if(responsavelDTO.FlResponsavelPrincipal)
+                _emailService.EnviarEmail(responsavelDTO.TxEmail, "responsavel_aluno");
 
             _db.ResponsavelAlunos.Add(responsavel);
 
