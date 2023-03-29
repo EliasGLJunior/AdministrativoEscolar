@@ -22,6 +22,7 @@ namespace AdministrativoEscolar.CDU.Services
         private readonly IResponsavelAlunoQuery _responsavelQuery;
         private readonly IStatusUsuarioQuery _statusUsuarioQuery;
         private readonly ITipoUsuarioQuery _tipoUsuarioQuery;
+        private readonly IEmailService _emailService;
         private readonly IUserLoggedExtensions _userLoggedExtensions;
 
         public ResponsavelAlunoService(
@@ -30,6 +31,7 @@ namespace AdministrativoEscolar.CDU.Services
             IResponsavelAlunoQuery responsavelQuery,
             IStatusUsuarioQuery statusUsuarioQuery,
             ITipoUsuarioQuery tipoUsuarioQuery,
+            IEmailService emailService,
             IUserLoggedExtensions userLoggedExtensions,
             INotificador notificador) : base(notificador)
         {
@@ -38,6 +40,7 @@ namespace AdministrativoEscolar.CDU.Services
             _responsavelQuery = responsavelQuery;
             _statusUsuarioQuery = statusUsuarioQuery;
             _tipoUsuarioQuery = tipoUsuarioQuery;
+            _emailService = emailService;
             _userLoggedExtensions = userLoggedExtensions;
         }
 
@@ -47,9 +50,9 @@ namespace AdministrativoEscolar.CDU.Services
 
             var existeResponsavel = _responsavelQuery.GetResponsavelByIdAluno(responsavelDTO.IdAluno).Result;
 
-            if (existeResponsavel != null)
+            if (existeResponsavel != null && responsavelDTO.FlResponsavelPrincipal)
             {
-                NotificarErro("Já existe um endereço ativo para esse Aluno.");
+                NotificarErro("Já existe um responsável principal para esse Aluno.");
                 return response;
             }
 
@@ -83,6 +86,8 @@ namespace AdministrativoEscolar.CDU.Services
                     }
                 }
             };
+
+            _emailService.EnviarEmail(responsavelDTO.TxEmail, "responsavel_aluno");
 
             _db.ResponsavelAlunos.Add(responsavel);
 
