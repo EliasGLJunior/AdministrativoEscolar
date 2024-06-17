@@ -27,7 +27,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "SGTRAN - READ API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "ADM - ESCOLAR API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
